@@ -1,11 +1,10 @@
 # testing out if we can read these files
 import os
-from typing import final
 import datetime as dt
 from os import listdir
 from os.path import isfile, join
+import numpy as np
 
-sttime = dt.datetime.now()
 def get_data_from_parsed(filename): # send in full path to parsed data file (from IDL output), return dictionary with packets
     # open the file, in read binary mode
     f = open(filename, 'rb')
@@ -26,10 +25,11 @@ def get_data_from_parsed(filename): # send in full path to parsed data file (fro
         for ind in inds:
             line = datalines[ind+p]
             key_str = ""
+            line = str(line)
             for ci, char in enumerate(line):
                 if char == '=':
                     # everything after here is the float we want
-                    key_val = line[ci+1:]
+                    key_val = line[ci+1:-3]
                     if ind == 30 or ind == 32:
                         kv = key_val.strip()
                         kv = kv.split()
@@ -39,7 +39,7 @@ def get_data_from_parsed(filename): # send in full path to parsed data file (fro
                         kv = float(kv)
                     break
                     
-                key_str += char
+                key_str += str(char)
             data[packetn][key_str] = kv
             
         # finally, grab the time
@@ -71,13 +71,22 @@ def get_data_from_parsed(filename): # send in full path to parsed data file (fro
 
 def find_files(datapath):
     rawfiles = [f for f in listdir(datapath) if isfile(join(datapath, f))]
+    rawfiles_final = []
+    for r in rawfiles:
+        if 'DATp' in r:
+            pass 
+        elif r + 'p' in rawfiles:
+            pass
+        else:
+            rawfiles_final.append(r)
 
-    for f in rawfiles:
-        fn = datapath + '/' + f
-        cwd = os.getcwd()
-        os.chdir('/home/rileyannereid/workspace/canvas_demeter/IDL_edited')
-        os.system("idl -e 'rd_dmt_n1' -arg " + fn)
-        os.chdir(cwd)
+    if len(rawfiles_final) != 0:
+        for f in rawfiles_final:
+            fn = datapath + '/' + f
+            cwd = os.getcwd()
+            os.chdir('/home/rileyannereid/workspace/canvas_demeter/IDL_edited')
+            os.system("idl -e 'rd_dmt_n1' -arg " + fn)
+            os.chdir(cwd)
 
     parsefiles = [f for f in listdir(datapath) if isfile(join(datapath, f))]
     final_parsefiles = []
