@@ -6,6 +6,7 @@ from os.path import isfile, join
 import numpy as np
 
 def get_data_from_parsed(filename): # send in full path to parsed data file (from IDL output), return dictionary with packets
+
     # open the file, in read binary mode
     f = open(filename, 'rb')
     datalines = [line for line in f]
@@ -62,6 +63,7 @@ def get_data_from_parsed(filename): # send in full path to parsed data file (fro
         pdata = []
         for ps in packet_split:
             for pd in ps:
+                #print(pd)
                 pdata.append(float(pd))
 
         data[packetn]['Edata'] = np.array(pdata) # add data to dict. for this packet
@@ -82,7 +84,10 @@ def find_files(datapath):
 
     if len(rawfiles_final) != 0:
         for f in rawfiles_final:
+
             fn = datapath + '/' + f
+            if '.txt' in fn or '.png' in fn:
+                continue
             cwd = os.getcwd()
             os.chdir('/home/rileyannereid/workspace/canvas_demeter/IDL_edited')
             os.system("idl -e 'rd_dmt_n1' -arg " + fn)
