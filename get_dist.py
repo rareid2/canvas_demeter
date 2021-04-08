@@ -22,7 +22,7 @@ def get_max(datapath,d_unit):
         # next find the correct file names
 
         if fo[-4:] == 'DATp':
-            
+            print(fo)
             data = get_data_from_parsed(fo)
             
             #combine_packets(data)
@@ -77,7 +77,6 @@ def get_max(datapath,d_unit):
             np.savetxt(datapath+'/lt_'+savetime+'.txt',np.array(localtimelist))
         fcount+=1
         print('file ' + str(fcount) + ' of ' + str(len(parsed_files)))
-        print(fo)
 
 
 def is_outlier(points, thresh=3.7):
@@ -167,6 +166,19 @@ def plot_dist(datapath,d_unit):
         fig.tight_layout()
         plt.savefig(datapath+'/' + ltime + '_distribution.png')
         plt.close()
+
+        # print ltime
+        overcount = 0
+        for uf in unfiltered_data:
+            if d_unit == 'mV/m':
+                if uf > 20:
+                    overcount+=1
+            elif d_unit == 'nT':
+                if uf > 10:
+                    overcount+=1
+        
+        percent_over = overcount / len(unfiltered_data)
+        print(ltime, 'percent over = ', percent_over)
 
 
 def plot_edge_cases(datapath,d_unit):
@@ -267,15 +279,14 @@ def plot_edge_cases(datapath,d_unit):
 
 # whooo
 
-datapath = '/media/rileyannereid/DEMETER/2008/01/1131'
-d_unit = 'mV/m'
-
+datapath = '/media/rileyannereid/DEMETER/2008/01/1136'
+d_unit = 'nT'
 # find the maximums - processes all data, takes ~3hrs
-get_max(datapath,d_unit) 
+#get_max(datapath,d_unit) 
 
 # plot distribution and edge cases 
 # distribuition is pretty quick, edge cases ~2hrs
-plot_dist(datapath,d_unit)
+#plot_dist(datapath,d_unit)
 plot_edge_cases(datapath,d_unit)
 
 # or here is code to plot one individually 

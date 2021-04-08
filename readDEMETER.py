@@ -54,6 +54,8 @@ def get_data_from_parsed(filename): # send in full path to parsed data file (fro
 
         # now we've got all the header info we want, let's get the actual data
         packet_data = datalines[p+63:p+1429]
+        if packet_data == []: # werid fix
+            continue
         packet_data[0] = packet_data[0][8:] # remove the data intro
 
         packet_strip = [pd.strip() for pd in packet_data]
